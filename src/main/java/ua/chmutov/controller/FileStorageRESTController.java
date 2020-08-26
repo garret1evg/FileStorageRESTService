@@ -38,8 +38,6 @@ public class FileStorageRESTController {
                 counter = maxIdFile.getId()+1;
         }
 
-        //System.out.println(file);
-
         if(file.getName()== null)
             return new ResponseEntity<>(new ErrorResponse(WRONG_NAME), HttpStatus.BAD_REQUEST);
 
@@ -62,9 +60,6 @@ public class FileStorageRESTController {
 
     @PostMapping("{id}/tags")
     public ResponseEntity<ResponseInterface> assignTags(@PathVariable("id") String fileId,@RequestBody String[] tags){
-//        for (String tag:tags) {
-//            System.out.println(tag);
-//        }
 
         long id = getCorrectId(fileId);
         if (id==-1)
@@ -107,18 +102,13 @@ public class FileStorageRESTController {
     }
 
     @GetMapping
-    GetResponse getList(
+    ResponseEntity<ResponseInterface> getList(
             @RequestParam(value = "tags",required = false) String[] tags,
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "size",defaultValue = "10") int size){
-        if (tags!= null)
-            for (String tag:tags)
-                System.out.println(tag);
 
-        System.out.println(page);
-        System.out.println(size);
-        Page<MyFile> pageObj = repository.getPageWithoutParameters(PageRequest.of(page,size));
-        return new GetResponse((int) pageObj.getTotalElements(),pageObj.getContent().toArray(new MyFile[0]));
+        Page<MyFile> pageObj = repository.getPageWithoutParameters(new TagsContainer(tags), PageRequest.of(page,size));
+        return new ResponseEntity<>(new GetResponse((int) pageObj.getTotalElements(),pageObj.getContent().toArray(new MyFile[0])),HttpStatus.OK);
     }
 
     private long getCorrectId(String fileId) {

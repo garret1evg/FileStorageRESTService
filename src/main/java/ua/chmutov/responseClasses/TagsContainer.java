@@ -23,11 +23,14 @@ public class TagsContainer {
     @Override
     public String toString() {
         StringBuffer str = new StringBuffer("\"must\":[");
-        for (int i = 0;i < tags.length;i++) {
-            str.append("{\"match\": {\"tags\":\""+ tags[i] +"\"}}");
-            if (i+1 < tags.length)
-                str.append(",");
+        if(tags!=null){
+            for (int i = 0;i < tags.length;i++) {
+                str.append("{\"match\": {\"tags\":\""+ tags[i] +"\"}}");
+                if (i+1 < tags.length)
+                    str.append(",");
+            }
         }
+
         str.append("]");
         return str.toString();
     }

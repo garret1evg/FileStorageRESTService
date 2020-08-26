@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.stereotype.Repository;
 import ua.chmutov.entity.MyFile;
 import ua.chmutov.responseClasses.PageResponse;
+import ua.chmutov.responseClasses.TagsContainer;
 
 @Repository
 public interface FileRepository extends ElasticsearchRepository<MyFile,Long> {
@@ -17,14 +18,10 @@ public interface FileRepository extends ElasticsearchRepository<MyFile,Long> {
 
     MyFile findById(long id);
     @Query(" {\n" +
-            "        \"bool\":{\n" +
-            "            \"must\":[\n" +
-            "                {\"match\": {\"tags\":\"aaaa\"}},\n" +
-            "                {\"match\": {\"tags\":\"kk\"}}\n" +
-            "            ]\n" +
+            "        \"bool\":{\n" + "?0"+
             "\n" +
             "        }\n" +
             "        \n" +
             "    }")
-    Page<MyFile> getPageWithoutParameters(Pageable pageable);
+    Page<MyFile> getPageWithoutParameters(TagsContainer container, Pageable pageable);
 }
