@@ -1,10 +1,14 @@
 package ua.chmutov.repository;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 import ua.chmutov.entity.MyFile;
+import ua.chmutov.responseClasses.PageResponse;
+
 @Repository
 public interface FileRepository extends ElasticsearchRepository<MyFile,Long> {
 
@@ -12,12 +16,15 @@ public interface FileRepository extends ElasticsearchRepository<MyFile,Long> {
     MyFile findFirstByOrderByIdDesc();
 
     MyFile findById(long id);
-//    @Query("\"query\": {\n" +
-//            "        \"match\" : {\n" +
-//            "            \"name\" : \"5ltdtyjkuhstdghth\"\n" +
-//            "        }\n" +
-//            "    },\n{\"size\": ?1," +
-//            "    \"from\": ?0," +
-//            "    \"_source\": [ \"id\", \"name\", \"size\" ,\"tags\"]}")
-//    Page<MyFile> getPage(int from,int size);
+    @Query(" {\n" +
+            "        \"bool\":{\n" +
+            "            \"must\":[\n" +
+            "                {\"match\": {\"tags\":\"aaaa\"}},\n" +
+            "                {\"match\": {\"tags\":\"kk\"}}\n" +
+            "            ]\n" +
+            "\n" +
+            "        }\n" +
+            "        \n" +
+            "    }")
+    Page<MyFile> getPageWithoutParameters(Pageable pageable);
 }

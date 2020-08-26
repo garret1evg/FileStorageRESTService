@@ -1,16 +1,17 @@
 package ua.chmutov.controller;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.chmutov.DTO.FileDTO;
 import ua.chmutov.entity.MyFile;
 import ua.chmutov.repository.FileRepository;
-import ua.chmutov.responseClasses.ErrorResponse;
-import ua.chmutov.responseClasses.ResponseInterface;
-import ua.chmutov.responseClasses.SuccessResponse;
-import ua.chmutov.responseClasses.UploadSuccess;
+import ua.chmutov.responseClasses.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +107,7 @@ public class FileStorageRESTController {
     }
 
     @GetMapping
-    ResponseEntity<ResponseInterface> getList(
+    GetResponse getList(
             @RequestParam(value = "tags",required = false) String[] tags,
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "size",defaultValue = "10") int size){
@@ -116,8 +117,8 @@ public class FileStorageRESTController {
 
         System.out.println(page);
         System.out.println(size);
-        //System.out.println(repository.getPage(page*size,size));
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
+        Page<MyFile> pageObj = repository.getPageWithoutParameters(PageRequest.of(page,size));
+        return new GetResponse((int) pageObj.getTotalElements(),pageObj.getContent().toArray(new MyFile[0]));
     }
 
     private long getCorrectId(String fileId) {
