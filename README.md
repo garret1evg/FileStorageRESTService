@@ -4,9 +4,6 @@ This is an application that allows us to store files in the cloud, categorize th
 We won't store the actual file content, only their name and size at the moment.
 
 ##More information
-install and run elasticsearch, then
-
-Build: `mvn clean package`
 
 ###1. Upload
 ```
