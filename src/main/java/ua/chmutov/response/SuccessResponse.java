@@ -1,5 +1,7 @@
 package ua.chmutov.response;
-
+/**
+ * класс для отправки статуса успеха
+ */
 public class SuccessResponse implements ResponseInterface{
     private boolean success;
 

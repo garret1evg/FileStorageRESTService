@@ -15,11 +15,12 @@ public interface FileRepository extends ElasticsearchRepository<MyFile,Long> {
     MyFile findFirstByOrderByIdDesc();
 
     MyFile findById(long id);
+
     @Query(" {\n" +
             "        \"bool\":{\n" + "?0"+
             "\n" +
             "        }\n" +
             "        \n" +
             "    }")
-    Page<MyFile> getPageWithoutParameters(TagsContainer container, Pageable pageable);
+    Page<MyFile> getPage(TagsContainer container, Pageable pageable);
 }

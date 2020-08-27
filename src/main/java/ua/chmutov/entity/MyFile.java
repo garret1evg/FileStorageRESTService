@@ -3,7 +3,6 @@ package ua.chmutov.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-
 @Document(indexName = "file-storage", indexStoreType = "default" )
 public class MyFile {
 

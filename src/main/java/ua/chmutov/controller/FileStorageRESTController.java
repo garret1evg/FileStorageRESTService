@@ -18,6 +18,9 @@ import java.util.Set;
 import static ua.chmutov.constants.DefaultTagsName.*;
 import static ua.chmutov.constants.ErrorMessages.*;
 
+/**
+ * Главный контроллер
+ */
 @RequestMapping("file")
 @RestController
 public class FileStorageRESTController {
@@ -27,8 +30,14 @@ public class FileStorageRESTController {
 
     private long counter = 0;
 
+    /**
+     *  Загружаем файл
+     * @param file
+     * @return
+     */
     @PostMapping
     public ResponseEntity<ResponseInterface> upload(@RequestBody FileDTO file){
+        // Выбор значения для самоинкрементирующего индекса
         if (counter ==0 ){
             MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
             if (maxIdFile!=null)
@@ -43,12 +52,17 @@ public class FileStorageRESTController {
 
         repository.save(new MyFile(counter,file.getName(),file.getSize()));
 
-
+        //проверка на стандартные расширения
         checkForExtension(file.getName(),counter);
 
         return new ResponseEntity<>(new UploadSuccess(counter++), HttpStatus.OK);
     }
 
+    /**
+     * добавление тегов для файлов со стандартными расширениями
+     * @param name
+     * @param id
+     */
     private void checkForExtension(String name,long id){
         String extension = "";
 
@@ -75,8 +89,14 @@ public class FileStorageRESTController {
 
     }
 
+    /**
+     * удаление файла
+     * @param fileId
+     * @return
+     */
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseInterface> delete(@PathVariable("id") String fileId){
+        //проверка на валидность id
         long id = getCorrectId(fileId);
         if (id==-1)
             return new ResponseEntity<>(new ErrorResponse(FILE_NOT_FOUND), HttpStatus.NOT_FOUND);
@@ -84,7 +104,12 @@ public class FileStorageRESTController {
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
-
+    /**
+     * добавление тегов в файл
+     * @param fileId
+     * @param tags
+     * @return
+     */
     @PostMapping("{id}/tags")
     public ResponseEntity<ResponseInterface> assignTags(@PathVariable("id") String fileId,@RequestBody String[] tags){
 
@@ -96,6 +121,11 @@ public class FileStorageRESTController {
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
+    /**
+     * работа с массивами для добавления новых тегов к старым
+     * @param tags
+     * @param id
+     */
     private void setTags(@RequestBody String[] tags, long id) {
         MyFile file = repository.findById(id);
         String[] oldTags =file.getTags();
@@ -108,6 +138,12 @@ public class FileStorageRESTController {
         repository.save(file);
     }
 
+    /**
+     * удаление тегов из файла
+     * @param fileId
+     * @param tags
+     * @return
+     */
     @DeleteMapping("{id}/tags")
     public ResponseEntity<ResponseInterface> deleteTags(@PathVariable("id") String fileId,@RequestBody String[] tags){
         long id = getCorrectId(fileId);
@@ -133,6 +169,14 @@ public class FileStorageRESTController {
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
+    /**
+     *поиск по бд
+     * @param tags
+     * @param page
+     * @param size
+     * @param wildcard
+     * @return
+     */
     @GetMapping
     ResponseEntity<ResponseInterface> getList(
             @RequestParam(value = "tags",required = false) String[] tags,
@@ -140,10 +184,15 @@ public class FileStorageRESTController {
             @RequestParam(value = "size",defaultValue = "10") int size,
             @RequestParam(value = "q",required = false) String wildcard){
 
-        Page<MyFile> pageObj = repository.getPageWithoutParameters(new TagsContainer(tags,wildcard), PageRequest.of(page,size));
+        Page<MyFile> pageObj = repository.getPage(new TagsContainer(tags,wildcard), PageRequest.of(page,size));
         return new ResponseEntity<>(new GetResponse((int) pageObj.getTotalElements(),pageObj.getContent().toArray(new MyFile[0])),HttpStatus.OK);
     }
 
+    /**
+     * получить валидный id
+     * @param fileId
+     * @return
+     */
     private long getCorrectId(String fileId) {
         long id = -1;
         try {

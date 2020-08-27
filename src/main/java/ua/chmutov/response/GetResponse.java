@@ -2,6 +2,9 @@ package ua.chmutov.response;
 
 import ua.chmutov.entity.MyFile;
 
+/**
+ * класс для отправки ответа на get запрос клиенту в нужном формате
+ */
 public class GetResponse implements ResponseInterface {
     private int total;
     private MyFile[] page;
