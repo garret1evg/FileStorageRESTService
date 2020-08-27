@@ -46,8 +46,38 @@ public class FileStorageRESTController {
 
         repository.save(new MyFile(counter,file.getName(),file.getSize()));
 
+
+        checkForExtension(file.getName(),counter);
+
         return new ResponseEntity<>(new UploadSuccess(counter++), HttpStatus.OK);
     }
+
+    private void checkForExtension(String name,long id){
+        String extension = "";
+
+        int i = name.lastIndexOf('.');
+        if (i > 0) {
+            extension = name.substring(i+1);
+            switch (extension){
+                case ("mp3"):
+                    setTags(new String[]{"audio"}, id);
+                    break;
+                case ("avi"):
+                    setTags(new String[]{"video"}, id);
+                    break;
+                case ("pdf"):
+                    setTags(new String[]{"document"}, id);
+                    break;
+                case ("jpg"):
+                    setTags(new String[]{"image"}, id);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseInterface> delete(@PathVariable("id") String fileId){
         long id = getCorrectId(fileId);
@@ -65,6 +95,11 @@ public class FileStorageRESTController {
         if (id==-1)
             return new ResponseEntity<>(new ErrorResponse(FILE_NOT_FOUND), HttpStatus.NOT_FOUND);
 
+        setTags(tags, id);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
+    }
+
+    private void setTags(@RequestBody String[] tags, long id) {
         MyFile file = repository.findById(id);
         String[] oldTags =file.getTags();
         if (oldTags != null){
@@ -74,8 +109,8 @@ public class FileStorageRESTController {
         }
         file.setTags(tags);
         repository.save(file);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
+
     @DeleteMapping("{id}/tags")
     public ResponseEntity<ResponseInterface> deleteTags(@PathVariable("id") String fileId,@RequestBody String[] tags){
         long id = getCorrectId(fileId);
@@ -105,9 +140,10 @@ public class FileStorageRESTController {
     ResponseEntity<ResponseInterface> getList(
             @RequestParam(value = "tags",required = false) String[] tags,
             @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size){
+            @RequestParam(value = "size",defaultValue = "10") int size,
+            @RequestParam(value = "q",required = false) String wildcard){
 
-        Page<MyFile> pageObj = repository.getPageWithoutParameters(new TagsContainer(tags), PageRequest.of(page,size));
+        Page<MyFile> pageObj = repository.getPageWithoutParameters(new TagsContainer(tags,wildcard), PageRequest.of(page,size));
         return new ResponseEntity<>(new GetResponse((int) pageObj.getTotalElements(),pageObj.getContent().toArray(new MyFile[0])),HttpStatus.OK);
     }
 
