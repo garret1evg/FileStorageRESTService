@@ -1,10 +1,13 @@
-package ua.chmutov.responseClasses;
+package ua.chmutov.response;
 
 import ua.chmutov.entity.MyFile;
 
 public class GetResponse implements ResponseInterface {
     private int total;
     private MyFile[] page;
+
+    public GetResponse() {
+    }
 
     public GetResponse(int total, MyFile[] page) {
         this.total = total;

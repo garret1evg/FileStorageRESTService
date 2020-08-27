@@ -2,12 +2,6 @@ package ua.chmutov.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
-import static org.springframework.data.elasticsearch.annotations.FieldType.Keyword;
 
 
 @Document(indexName = "file-storage", indexStoreType = "default" )
@@ -17,7 +11,6 @@ public class MyFile {
     private long id;
     private String name;
     private int size;
-    @Field(type = Keyword)
     private String[] tags;
 
     public MyFile(long id, String name, int size, String[] tags) {

@@ -1,24 +1,21 @@
 package ua.chmutov.controller;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.chmutov.DTO.FileDTO;
 import ua.chmutov.entity.MyFile;
 import ua.chmutov.repository.FileRepository;
-import ua.chmutov.responseClasses.*;
+import ua.chmutov.response.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
+import static ua.chmutov.constants.DefaultTagsName.*;
 import static ua.chmutov.constants.ErrorMessages.*;
 
 @RequestMapping("file")
@@ -60,16 +57,16 @@ public class FileStorageRESTController {
             extension = name.substring(i+1);
             switch (extension){
                 case ("mp3"):
-                    setTags(new String[]{"audio"}, id);
+                    setTags(new String[]{AUDIO_TAG}, id);
                     break;
                 case ("avi"):
-                    setTags(new String[]{"video"}, id);
+                    setTags(new String[]{VIDEO_TAG}, id);
                     break;
                 case ("pdf"):
-                    setTags(new String[]{"document"}, id);
+                    setTags(new String[]{DOCUMENT_TAG}, id);
                     break;
                 case ("jpg"):
-                    setTags(new String[]{"image"}, id);
+                    setTags(new String[]{IMAGE_TAG}, id);
                     break;
                 default:
                     break;

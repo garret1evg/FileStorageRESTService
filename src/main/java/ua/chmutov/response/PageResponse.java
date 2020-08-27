@@ -1,4 +1,4 @@
-package ua.chmutov.responseClasses;
+package ua.chmutov.response;
 
 import ua.chmutov.entity.MyFile;
 

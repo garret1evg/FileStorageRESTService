@@ -1,14 +1,12 @@
 package ua.chmutov.repository;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 import ua.chmutov.entity.MyFile;
-import ua.chmutov.responseClasses.PageResponse;
-import ua.chmutov.responseClasses.TagsContainer;
+import ua.chmutov.response.TagsContainer;
 
 @Repository
 public interface FileRepository extends ElasticsearchRepository<MyFile,Long> {

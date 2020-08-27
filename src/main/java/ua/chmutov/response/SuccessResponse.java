@@ -1,4 +1,4 @@
-package ua.chmutov.responseClasses;
+package ua.chmutov.response;
 
 public class SuccessResponse implements ResponseInterface{
     private boolean success;

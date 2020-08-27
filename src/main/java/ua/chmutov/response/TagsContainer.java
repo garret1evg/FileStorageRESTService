@@ -1,6 +1,4 @@
-package ua.chmutov.responseClasses;
-
-import java.util.Arrays;
+package ua.chmutov.response;
 
 public class TagsContainer {
     private String[] tags;
