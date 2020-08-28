@@ -3,6 +3,22 @@ This is an application that allows us to store files in the cloud, categorize th
 
 We won't store the actual file content, only their name and size at the moment.
 
+## Instructions
+
+* Install and run elasticsearch(https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html)
+* Create document for storage data.Type this into your console:
+```
+curl -XPUT "http://localhost:9200/file-storage"
+```
+* Compile maven project
+```
+mvn compile
+```
+* Run app
+```
+ mvn exec:java -Dexec.mainClass=ua.chmutov.FileStorageRESTService
+```
+
 ## More information
 
 ### 1. Upload
