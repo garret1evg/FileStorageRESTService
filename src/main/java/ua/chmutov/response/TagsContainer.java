@@ -24,15 +24,19 @@ public class TagsContainer {
 
     @Override
     public String toString() {
-        StringBuffer str = new StringBuffer("\"must\":[");
+        StringBuilder str = new StringBuilder("\"must\":[");
         if(wildcard!=null){
-            str.append("{\"wildcard\": {\"name\":\"*"+ wildcard +"*\"}}");
+            str.append("{\"wildcard\": {\"name\":\"*")
+                    .append(wildcard)
+                    .append("*\"}}");
             if(tags!=null)
                 str.append(",");
         }
         if(tags!=null){
             for (int i = 0;i < tags.length;i++) {
-                str.append("{\"match\": {\"tags\":\""+ tags[i] +"\"}}");
+                str.append("{\"match\": {\"tags\":\"")
+                        .append(tags[i])
+                        .append("\"}}");
                 if (i+1 < tags.length)
                     str.append(",");
             }
