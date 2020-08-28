@@ -26,10 +26,23 @@ import static ua.chmutov.constants.ErrorMessages.*;
 @RestController
 public class FileStorageRESTController {
 
-    @Autowired
-    FileRepository repository;
+    final FileRepository repository;
 
     private long counter = 0;
+
+    public FileStorageRESTController(FileRepository repository) {
+        this.repository = repository;
+        // choosing value for counter
+        if (counter ==0 ){
+            Iterable<MyFile> list = repository.findAll();
+            if(list.spliterator().getExactSizeIfKnown()>0){
+                MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
+                if (maxIdFile!=null)
+                    counter = maxIdFile.getId()+1;
+            }
+
+        }
+    }
 
     /**
      * Upload file to DB
@@ -40,16 +53,7 @@ public class FileStorageRESTController {
     public ResponseEntity<ResponseInterface> upload(
             @RequestBody FileDTO file
     ){
-        // choosing value for counter
-        if (counter ==0 ){
-            Iterable<MyFile> list = repository.findAll();
-            if(list.spliterator().getExactSizeIfKnown()>0){
-                MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
-                if (maxIdFile!=null)
-                    counter = maxIdFile.getId()+1;
-            }
-            
-        }
+
 
         if(file.getName()== null)
             return new ResponseEntity<>(new ErrorResponse(WRONG_NAME), HttpStatus.BAD_REQUEST);
