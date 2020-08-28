@@ -13,6 +13,7 @@ import ua.chmutov.response.*;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import static ua.chmutov.constants.DefaultTagsName.*;
@@ -39,9 +40,13 @@ public class FileStorageRESTController {
     public ResponseEntity<ResponseInterface> upload(@RequestBody FileDTO file){
         // Выбор значения для самоинкрементирующего индекса
         if (counter ==0 ){
-            MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
-            if (maxIdFile!=null)
-                counter = maxIdFile.getId()+1;
+            Iterable<MyFile> list = repository.findAll();
+            if(list.spliterator().getExactSizeIfKnown()>0){
+                MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
+                if (maxIdFile!=null)
+                    counter = maxIdFile.getId()+1;
+            }
+            
         }
 
         if(file.getName()== null)
