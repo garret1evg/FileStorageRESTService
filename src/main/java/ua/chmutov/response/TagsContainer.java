@@ -1,6 +1,6 @@
 package ua.chmutov.response;
 /**
- * класс для дополнения запросв в бд
+ * class extends DB query
  */
 public class TagsContainer {
     private String[] tags;

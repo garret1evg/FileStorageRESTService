@@ -1,8 +1,6 @@
 package ua.chmutov.response;
 
-/**
- * класс для отправки ошибки клиенту
- */
+
 public class ErrorResponse implements ResponseInterface {
     private boolean success;
     private String error;

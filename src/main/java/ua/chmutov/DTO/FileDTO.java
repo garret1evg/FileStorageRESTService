@@ -3,7 +3,7 @@ package ua.chmutov.DTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * класс для получения данных о файле со стороны клиента
+ * class to get information from client
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileDTO {

@@ -20,7 +20,7 @@ import static ua.chmutov.constants.DefaultTagsName.*;
 import static ua.chmutov.constants.ErrorMessages.*;
 
 /**
- * Главный контроллер
+ * Main controller
  */
 @RequestMapping("file")
 @RestController
@@ -32,13 +32,15 @@ public class FileStorageRESTController {
     private long counter = 0;
 
     /**
-     *  Загружаем файл
-     * @param file
-     * @return
+     * Upload file to DB
+     * @param file uploading file
+     * @return json
      */
     @PostMapping
-    public ResponseEntity<ResponseInterface> upload(@RequestBody FileDTO file){
-        // Выбор значения для самоинкрементирующего индекса
+    public ResponseEntity<ResponseInterface> upload(
+            @RequestBody FileDTO file
+    ){
+        // choosing value for counter
         if (counter ==0 ){
             Iterable<MyFile> list = repository.findAll();
             if(list.spliterator().getExactSizeIfKnown()>0){
@@ -57,14 +59,14 @@ public class FileStorageRESTController {
 
         repository.save(new MyFile(counter,file.getName(),file.getSize()));
 
-        //проверка на стандартные расширения
+        //check for default extensions
         checkForExtension(file.getName(),counter);
 
         return new ResponseEntity<>(new UploadSuccess(counter++), HttpStatus.OK);
     }
 
     /**
-     * добавление тегов для файлов со стандартными расширениями
+     * adding tags to file
      * @param name
      * @param id
      */
@@ -95,9 +97,9 @@ public class FileStorageRESTController {
     }
 
     /**
-     * удаление файла
-     * @param fileId
-     * @return
+     * delete file
+     * @param fileId file id in String
+     * @return  json
      */
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseInterface> delete(@PathVariable("id") String fileId){
@@ -110,10 +112,10 @@ public class FileStorageRESTController {
     }
 
     /**
-     * добавление тегов в файл
-     * @param fileId
-     * @param tags
-     * @return
+     * adding tags to file
+     * @param fileId fileId file id
+     * @param tags array of String tags values
+     * @return json
      */
     @PostMapping("{id}/tags")
     public ResponseEntity<ResponseInterface> assignTags(@PathVariable("id") String fileId,@RequestBody String[] tags){
@@ -127,9 +129,9 @@ public class FileStorageRESTController {
     }
 
     /**
-     * работа с массивами для добавления новых тегов к старым
-     * @param tags
-     * @param id
+     * merge arrays tags and saving to DB
+     * @param tags array of String tags values
+     * @param id file id
      */
     private void setTags(@RequestBody String[] tags, long id) {
         MyFile file = repository.findById(id);
@@ -144,10 +146,10 @@ public class FileStorageRESTController {
     }
 
     /**
-     * удаление тегов из файла
-     * @param fileId
-     * @param tags
-     * @return
+     * delete tags from file
+     * @param fileId file id
+     * @param tags array of String tags values
+     * @return json
      */
     @DeleteMapping("{id}/tags")
     public ResponseEntity<ResponseInterface> deleteTags(@PathVariable("id") String fileId,@RequestBody String[] tags){
@@ -175,12 +177,12 @@ public class FileStorageRESTController {
     }
 
     /**
-     *поиск по бд
-     * @param tags
-     * @param page
-     * @param size
-     * @param wildcard
-     * @return
+     *search
+     * @param tags array of String tags values
+     * @param page page number
+     * @param size page size
+     * @param wildcard String pattern to search for
+     * @return json
      */
     @GetMapping
     ResponseEntity<ResponseInterface> getList(
@@ -194,9 +196,9 @@ public class FileStorageRESTController {
     }
 
     /**
-     * получить валидный id
-     * @param fileId
-     * @return
+     * get valid id
+     * @param fileId file id
+     * @return json
      */
     private long getCorrectId(String fileId) {
         long id = -1;

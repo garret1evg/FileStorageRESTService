@@ -1,7 +1,5 @@
 package ua.chmutov.response;
-/**
- * класс для отправки id файла после добавления
- */
+
 public class UploadSuccess implements ResponseInterface{
     private long id;
 
