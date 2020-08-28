@@ -59,42 +59,46 @@ public class FileStorageRESTController {
         if(file.getSize()<= 0)
             return new ResponseEntity<>(new ErrorResponse(WRONG_SIZE), HttpStatus.BAD_REQUEST);
 
-        repository.save(new MyFile(counter,file.getName(),file.getSize()));
+        String[] tags = checkForExtensionAndAddToFile(file.getName(),counter);
+
+        repository.save(new MyFile(counter,file.getName(),file.getSize(),tags));
 
         //check for default extensions
-        checkForExtension(file.getName(),counter);
 
         return new ResponseEntity<>(new UploadSuccess(counter++), HttpStatus.OK);
     }
 
     /**
      * adding tags to file
-     * @param name
-     * @param id
+     * @param name file name
+     * @param id file id
+     * @return tags array
      */
-    private void checkForExtension(String name,long id){
-        String extension = "";
+    private String[] checkForExtensionAndAddToFile(String name,long id){
+        String extension ;
 
         int i = name.lastIndexOf('.');
         if (i > 0) {
             extension = name.substring(i+1);
             switch (extension){
                 case ("mp3"):
-                    setTags(new String[]{AUDIO_TAG}, id);
-                    break;
+                    return new String[]{AUDIO_TAG};
+
                 case ("avi"):
-                    setTags(new String[]{VIDEO_TAG}, id);
-                    break;
+                    return new String[]{VIDEO_TAG};
+
                 case ("pdf"):
-                    setTags(new String[]{DOCUMENT_TAG}, id);
-                    break;
+                    return new String[]{DOCUMENT_TAG};
+
                 case ("jpg"):
-                    setTags(new String[]{IMAGE_TAG}, id);
-                    break;
+                    return new String[]{IMAGE_TAG};
+
                 default:
-                    break;
+                    return null;
+
             }
         }
+        return null;
 
     }
 
