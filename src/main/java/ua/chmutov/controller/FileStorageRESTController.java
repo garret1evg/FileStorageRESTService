@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static ua.chmutov.constants.DefaultTagsName.*;
 import static ua.chmutov.constants.ErrorMessages.*;
@@ -28,7 +29,7 @@ public class FileStorageRESTController {
 
     final FileRepository repository;
 
-    private long counter = 0;
+    private AtomicLong counter ;
 
     public FileStorageRESTController(FileRepository repository) {
         this.repository = repository;
@@ -37,8 +38,9 @@ public class FileStorageRESTController {
         if(list.spliterator().getExactSizeIfKnown()>0){
             MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
             if (maxIdFile!=null)
-                counter = maxIdFile.getId()+1;
-        }
+                counter = new AtomicLong(maxIdFile.getId()+1);
+        }else
+            counter = new AtomicLong();
 
     }
 
@@ -59,22 +61,22 @@ public class FileStorageRESTController {
         if(file.getSize()<= 0)
             return new ResponseEntity<>(new ErrorResponse(WRONG_SIZE), HttpStatus.BAD_REQUEST);
 
-        String[] tags = checkForExtensionAndAddToFile(file.getName(),counter);
+        String[] tags = checkForExtensionAndAddToFile(file.getName());
 
-        repository.save(new MyFile(counter,file.getName(),file.getSize(),tags));
+        MyFile fileInDB = repository.save(new MyFile(counter.getAndIncrement(),file.getName(),file.getSize(),tags));
+
 
         //check for default extensions
 
-        return new ResponseEntity<>(new UploadSuccess(counter++), HttpStatus.OK);
+        return new ResponseEntity<>(new UploadSuccess(fileInDB.getId()), HttpStatus.OK);
     }
 
     /**
      * adding tags to file
      * @param name file name
-     * @param id file id
      * @return tags array
      */
-    private String[] checkForExtensionAndAddToFile(String name,long id){
+    private String[] checkForExtensionAndAddToFile(String name){
         String extension ;
 
         int i = name.lastIndexOf('.');
