@@ -33,15 +33,13 @@ public class FileStorageRESTController {
     public FileStorageRESTController(FileRepository repository) {
         this.repository = repository;
         // choosing value for counter
-        if (counter ==0 ){
-            Iterable<MyFile> list = repository.findAll();
-            if(list.spliterator().getExactSizeIfKnown()>0){
-                MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
-                if (maxIdFile!=null)
-                    counter = maxIdFile.getId()+1;
-            }
-
+        Iterable<MyFile> list = repository.findAll();
+        if(list.spliterator().getExactSizeIfKnown()>0){
+            MyFile maxIdFile = repository.findFirstByOrderByIdDesc();
+            if (maxIdFile!=null)
+                counter = maxIdFile.getId()+1;
         }
+
     }
 
     /**
